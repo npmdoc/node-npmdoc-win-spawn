@@ -1,0 +1,148 @@
+<div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a
+
+    >win-spawn (v2.0.0)</a>
+</h1>
+<h4>Spawn for node.js but in a way that works regardless of which OS you're using</h4>
+<div class="apidocSectionDiv"><a
+    href="#apidoc.tableOfContents"
+    id="apidoc.tableOfContents"
+><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.win-spawn">module win-spawn</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.win-spawn.win-spawn">
+            function <span class="apidocSignatureSpan"></span>win-spawn
+            <span class="apidocSignatureSpan">(command, args, options)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.win-spawn" id="apidoc.module.win-spawn">module win-spawn</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.win-spawn.win-spawn" id="apidoc.element.win-spawn.win-spawn">
+        function <span class="apidocSignatureSpan"></span>win-spawn
+        <span class="apidocSignatureSpan">(command, args, options)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function spawn(command, args, options) {
+  if (os === &#x27;Windows_NT&#x27;) {
+    command = command.replace(/\//g, &#x27;\\&#x27;);
+
+    if (command === &#x27;rm&#x27;) {
+      command = &#x27;rmdir&#x27;;
+      if (args[0] === &#x27;-rf&#x27; || args[0] == &#x27;-fr&#x27;) {
+        args[0] = &#x27;/q&#x27;;
+        args.unshift(&#x27;/s&#x27;);
+      }
+      if (args[0] === &#x27;-f&#x27;) {
+        args[0] = &#x27;/q&#x27;;
+      }
+      if (args[0] === &#x27;-r&#x27;) {
+        args[0] = &#x27;/s&#x27;;
+      }
+    }
+    args = args || [];
+    options = options || {};
+    var match, matchA;
+    if (matchA = /((?:[A-Z_]+\=[^ \=]+ )+)?([^\r\n]+)/.exec(command)) {
+      try {
+        var file = require(&#x27;fs&#x27;).readFileSync(matchA[2], &#x27;utf8&#x27;);
+        if (match = /\#\!\/usr\/bin\/env ([^\r\n]+)/.exec(file)) {
+          args.unshift(matchA[2]);
+          command = (matchA[1] || &#x27;&#x27;) + match[1];
+        }
+      } catch (ex) { }
+    }
+
+    if (match = /((?:[A-Z_]+\=[^ \=]+ )+)([^\r\n]+)/.exec(command)) {
+      command = match[2];
+
+      options.env = options.env || shallowClone(process.env);
+
+      var env = match[1].split(&#x27; &#x27;);
+      env.forEach(function (v) {
+        v = v.split(&#x27;=&#x27;);
+        if (v.length === 2) {
+          options.env[v[0]] = v[1];
+        }
+      });
+    }
+
+    args.unshift(command);
+    args.unshift(&#x27;/c&#x27;);
+    args.unshift(&#x27;/d&#x27;);
+    command = &#x27;cmd&#x27;;
+  }
+  return cSpawn(command, args, options);
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
